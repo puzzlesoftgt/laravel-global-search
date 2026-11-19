@@ -1,0 +1,31 @@
+{
+  "name": "puzzlesoft/laravel-global-search",
+  "description": "Global search and command palette for Laravel applications",
+  "type": "library",
+  "keywords": [
+    "laravel",
+    "livewire",
+    "search",
+    "spotlight",
+    "command-palette"
+  ],
+  "require": {
+    "php": "^8.2",
+    "illuminate/contracts": "^12.0|^13.0",
+    "livewire/livewire": "^3.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "PuzzleSoft\\GlobalSearch\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "PuzzleSoft\\GlobalSearch\\GlobalSearchServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

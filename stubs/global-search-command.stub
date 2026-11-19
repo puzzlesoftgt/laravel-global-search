@@ -1,0 +1,189 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Support\Collection;
+use PuzzleSoft\GlobalSearch\Commands\GlobalSearchCommand;
+use PuzzleSoft\GlobalSearch\SearchResult;
+
+class {{ class }} extends GlobalSearchCommand
+{
+    /**
+     * Name shown when the user types ">".
+     *
+     * Register this class in config/global-search.php:
+     *
+     * 'commands' => [
+     *     {{ class }}::class,
+     * ],
+     *
+     * Or in AppServiceProvider::boot():
+     *
+     * GlobalSearch::register([
+     *     {{ class }}::class,
+     * ]);
+     */
+    public static function name(): string
+    {
+        return '{{ name }}';
+    }
+
+    /**
+     * Secondary text shown for this command in ">" mode.
+     */
+    public static function description(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Group label for results when searching with Ctrl+K.
+     * Falls back to name() when omitted.
+     */
+    public static function category(): string
+    {
+        return '{{ name }}';
+    }
+
+    /**
+     * Words used to find this command with ">".
+     * They are not used to search records.
+     */
+    public static function keywords(): array
+    {
+        return [];
+    }
+
+    /**
+     * CSS class, for example "fa fa-search" (need Fontawesome), or a single character.
+     * Null hides the icon.
+     */
+    public static function icon(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Return false to hide the command and reject its execution.
+     */
+    public function authorized(): bool
+    {
+        return true;
+    }
+
+    /**
+     * true: Ctrl+K searches this command as the user types.
+     * false: it only appears when typing ">", as an action.
+     */
+    public function universal(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Return the records that match $query.
+     *
+     * Each item is a SearchResult:
+     * - id: record identifier.
+     * - title and description accept HTML. Escape user data with e().
+     * - url: when set, Enter opens it and execute() is not called.
+     *
+     * Limit the query. The package also truncates results to max_results.
+     * An exception thrown here hides every result from this command.
+     */
+    public function search(string $query): Collection
+    {
+        return collect();
+
+        // $limit = max(1, (int) config('global-search.search.max_results', 10));
+        //
+        // return Model::query()
+        //     ->where('number', 'like', '%'.$query.'%')
+        //     ->limit($limit)
+        //     ->get()
+        //     ->map(fn ($row) => SearchResult::make(
+        //         id: $row->id,
+        //         title: e($row->number),
+        //         description: 'Client: '.e($row->client),
+        //         url: route('show_model', $row->id),
+        //     ))
+        //     ->values();
+
+        // You can also search by many values if they have spaces
+        // $searchValues = array_values(array_filter(
+        //     explode(' ', trim($query)),
+        //     fn ($value) => $value !== ''
+        // ));
+
+        // if ($searchValues === []) {
+        //     return collect();
+        // }
+
+        // return Model::query()
+        //     ->where(function ($q) use ($searchValues) {
+        //         foreach ($searchValues as $value) {
+        //             $like = '%'.$this->escapeLike($value).'%';
+        //             $q->where(function ($w) use ($like) {
+        //                 $w->where('name', 'like', $like);
+        //             });
+        //         }
+        //     })
+        //     ->limit($limit)
+        //     ->get()
+        //     ->map(fn ($row) => SearchResult::make(
+        //         id: $row->id,
+        //         title: e($row->number),
+        //         description: 'Client: '.e($row->name),
+        //         url: route('show_model', $row->id),
+        //     ))
+        //     ->values();
+    }
+
+    /**
+     * Only used in ">" mode. Each dependency asks for a value before execute().
+     * A direct search does not need dependencies: use search() and url.
+     *
+     * To enable them, import SearchDependency and return, for example:
+     */
+    public function dependencies(): array
+    {
+        return [];
+
+        // return [
+        //     SearchDependency::make('record')
+        //         ->setPlaceholder('Which record do you want to find?')
+        //         ->setSearch(fn (string $query) => $this->search($query))
+        //         ->setResolve(function (string|int $id) {
+        //             $row = Model::find($id);
+        //             abort_unless($row !== null, 404);
+        
+        //             return $row->id;
+        //         }),
+        // ];
+    }
+
+    /**
+     * Called when a result has no url, or after the dependencies are completed.
+     * Receives the resolved values, in the same order as dependencies().
+     * Return a URL, or null to close the search box.
+     */
+    public function execute(mixed ...$values): ?string
+    {
+        return null;
+
+        // $id = $values[0] ?? null;
+     
+        // if (is_string($id) && ctype_digit($id)) {
+        //   $id = (int) $id;
+        // }
+        
+        // return $id === null ? null : route('show_model', $id);
+    }
+
+    // private function escapeLike(string $value): string
+    // {
+    //     return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $value);
+    // }
+    
+
+}
