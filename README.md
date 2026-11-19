@@ -271,3 +271,7 @@ The back button removes the last choice. On the first dependency, it returns to 
 ## Results without a URL
 
 If a direct-search result has no `url`, Enter calls `open()`, which by default calls `execute()` with that result id. Override `open()` when opening a record should do something other than `execute()`.
+
+## License
+
+This package is open-source software licensed under the [MIT license](LICENSE).

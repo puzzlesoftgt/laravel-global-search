@@ -2,6 +2,7 @@
   "name": "puzzlesoft/laravel-global-search",
   "description": "Global search and command palette for Laravel applications",
   "type": "library",
+  "license": "MIT",
   "keywords": [
     "laravel",
     "livewire",
