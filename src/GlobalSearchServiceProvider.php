@@ -39,9 +39,18 @@ class GlobalSearchServiceProvider extends ServiceProvider
                 ->register(config('global-search.commands', []));
         });
 
+        $publishedCss = resource_path('vendor/global-search/global-search.css');
+
         view()->share(
             'globalSearchCssPath',
-            __DIR__ . '/../resources/css/global-search.css'
+            is_file($publishedCss)
+                ? $publishedCss
+                : __DIR__ . '/../resources/css/global-search.css'
+        );
+
+        view()->share(
+            'globalSearchJsPath',
+            __DIR__ . '/../resources/js/global-search.js'
         );
 
         $this->loadTranslationsFrom(
@@ -57,6 +66,16 @@ class GlobalSearchServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../lang' => $this->app->langPath('vendor/global-search'),
         ], 'global-search-translations');
+
+        $this->publishes([
+            __DIR__ . '/../resources/views'
+                => resource_path('views/vendor/global-search'),
+        ], 'global-search-views');
+
+        $this->publishes([
+            __DIR__ . '/../resources/css/global-search.css'
+                => resource_path('vendor/global-search/global-search.css'),
+        ], 'global-search-css');
 
         if ($this->app->runningInConsole()) {
             $this->commands([

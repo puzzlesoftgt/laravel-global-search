@@ -63,6 +63,19 @@ php artisan vendor:publish --tag=global-search-translations
 
 This copies them to `lang/vendor/global-search/en/global-search.php` and `lang/vendor/global-search/es/global-search.php`. A published file replaces the one shipped with the package for that locale. To add a locale, copy one of those files to `lang/vendor/global-search/{locale}/global-search.php` and keep the same keys.
 
+## Publish the view and the CSS
+
+The markup and the stylesheet can be published. The JavaScript stays in the package, so behavior fixes still apply after you update it.
+
+```bash
+php artisan vendor:publish --tag=global-search-views
+php artisan vendor:publish --tag=global-search-css
+```
+
+The view is copied to `resources/views/vendor/global-search/global-search.blade.php`. Laravel uses that copy instead of the package view. Keep the `@once` block that prints `$globalSearchJsPath`. Removing it stops the search box from working.
+
+The stylesheet is copied to `resources/vendor/global-search/global-search.css`. When that file exists, the component uses it. Colors can also be changed with `ui.theme` and the CSS variables, without publishing the file. A published view or stylesheet no longer receives design updates from the package.
+
 ## Configuration
 
 ```php
