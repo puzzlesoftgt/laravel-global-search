@@ -39,6 +39,30 @@ Clear a cached config afterwards:
 php artisan config:clear
 ```
 
+## Translations
+
+The component text is translated. The package ships `lang/en/global-search.php` and `lang/es/global-search.php`.
+
+Laravel loads the file that matches the application locale. That locale comes from `APP_LOCALE` in `.env`:
+
+```env
+APP_LOCALE=es
+```
+
+`config/app.php` reads it as `locale`. With `es`, the Spanish file is used. With `en`, the English file is used. `App::setLocale('es')` also switches the file, because the component translates its labels when it renders. If the active locale has no file, Laravel falls back to English.
+
+`ui.placeholder` set to `null` uses the `placeholder` key from that file (`Search...` in English, `Buscar...` in Spanish). A string in the config replaces the translation in every locale.
+
+The placeholder of a dependency does not come from these files. Set it with `setPlaceholder()` on the dependency. When you omit it, the default is `Search...`.
+
+Publish the files to change the wording or add a locale:
+
+```bash
+php artisan vendor:publish --tag=global-search-translations
+```
+
+This copies them to `lang/vendor/global-search/en/global-search.php` and `lang/vendor/global-search/es/global-search.php`. A published file replaces the one shipped with the package for that locale. To add a locale, copy one of those files to `lang/vendor/global-search/{locale}/global-search.php` and keep the same keys.
+
 ## Configuration
 
 ```php
@@ -61,35 +85,33 @@ return [
 
     'ui' => [
         'theme' => 'auto',
-        'placeholder' => 'Search...',
+        'placeholder' => null,
         'show_icons' => true,
         'show_descriptions' => true,
     ],
 ];
 ```
 
-| Key | Purpose |
-| --- | --- |
-| `commands` | Command classes to register. |
-| `keyboard.shortcut` | Keys that open the palette. `mod` is Ctrl on Windows/Linux and Command on macOS. Examples: `mod+k`, `ctrl+shift+p`, `alt+k`. |
-| `keyboard.enabled` | Turn the shortcut off without removing the component. |
-| `keyboard.prevent_default` | Stop the browser from handling that shortcut. |
-| `search.debounce` | Milliseconds to wait after typing before searching. |
-| `search.min_characters` | Characters required before a record search runs. Command filtering with `>` ignores this. |
-| `search.max_results` | Maximum records returned per command or dependency. |
-| `ui.theme` | `light`, `dark`, or `auto` (follows the operating system). |
-| `ui.placeholder` | Placeholder for the direct search. |
-| `ui.show_icons` | Show the icon of each result. |
-| `ui.show_descriptions` | Show the secondary line of each result. |
+| Key                        | Purpose                                                                                                                      |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `commands`                 | Command classes to register.                                                                                                 |
+| `keyboard.shortcut`        | Keys that open the palette. `mod` is Ctrl on Windows/Linux and Command on macOS. Examples: `mod+k`, `ctrl+shift+p`, `alt+k`. |
+| `keyboard.enabled`         | Turn the shortcut off without removing the component.                                                                        |
+| `keyboard.prevent_default` | Stop the browser from handling that shortcut.                                                                                |
+| `search.debounce`          | Milliseconds to wait after typing before searching.                                                                          |
+| `search.min_characters`    | Characters required before a record search runs. Command filtering with `>` ignores this.                                    |
+| `search.max_results`       | Maximum records returned per command or dependency.                                                                          |
+| `ui.theme`                 | `light`, `dark`, or `auto` (follows the operating system).                                                                   |
+| `ui.placeholder`           | Placeholder for the direct search. `null` uses the translation. A string overrides it in every locale.                       |
+| `ui.show_icons`            | Show the icon of each result.                                                                                                |
+| `ui.show_descriptions`     | Show the secondary line of each result.                                                                                      |
 
 ## Open it from your own UI
 
 From Alpine or any element in the page:
 
 ```html
-<button type="button" @click="$dispatch('global-search-open')">
-    Search
-</button>
+<button type="button" @click="$dispatch('global-search-open')">Search</button>
 ```
 
 From a Livewire component:

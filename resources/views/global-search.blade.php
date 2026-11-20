@@ -1,5 +1,5 @@
 <div
-    x-data="puzzleGlobalSearch(@js($settings), $wire, @js($commands))"
+    x-data="puzzleGlobalSearch(@js($settings), $wire, @js($commands), @js($labels))"
     @keydown.window="handleShortcut($event)"
     @global-search-open.window="open()"
     @global-search-close.window="close()"
@@ -37,7 +37,7 @@
                 class="ps-search__dialog"
                 role="dialog"
                 aria-modal="true"
-                aria-label="Buscador global"
+                aria-label="{{ $labels['dialog'] }}"
             >
                 <div class="ps-search__header">
                     <button
@@ -45,7 +45,7 @@
                         type="button"
                         class="ps-search__back"
                         @click="back()"
-                        aria-label="Volver"
+                        aria-label="{{ $labels['back'] }}"
                     >
                         ←
                     </button>
@@ -73,7 +73,7 @@
                         class="ps-search__input"
                         :placeholder="placeholder"
                         autocomplete="off"
-                        aria-label="Buscar"
+                        aria-label="{{ $labels['search'] }}"
                     >
 
                     <span
@@ -81,21 +81,21 @@
                         x-show="loading"
                         x-cloak
                         role="status"
-                        aria-label="Buscando"
+                        aria-label="{{ $labels['searching'] }}"
                     ></span>
 
                     <button
                         type="button"
                         class="ps-search__kbd"
                         @click="close()"
-                        aria-label="Cerrar"
+                        aria-label="{{ $labels['close'] }}"
                     >ESC</button>
                 </div>
 
                 <div class="ps-search__results">
                     <template x-if="loading && items.length === 0">
                         <div class="ps-search__message">
-                            Buscando...
+                            {{ $labels['searching_message'] }}
                         </div>
                     </template>
 
@@ -160,19 +160,19 @@
                         <span class="ps-search__hint">
                             <kbd class="ps-search__kbd">↑</kbd>
                             <kbd class="ps-search__kbd">↓</kbd>
-                            Navegar
+                            {{ $labels['navigate'] }}
                         </span>
                         <span class="ps-search__hint">
                             <kbd class="ps-search__kbd">Enter</kbd>
-                            <span x-text="step === 'search' ? 'Abrir' : 'Seleccionar'"></span>
+                            <span x-text="step === 'search' ? labels.open : labels.select"></span>
                         </span>
                         <span class="ps-search__hint" x-show="step === 'search'">
                             <kbd class="ps-search__kbd">&gt;</kbd>
-                            Comandos
+                            {{ $labels['commands'] }}
                         </span>
                         <span class="ps-search__hint">
                             <kbd class="ps-search__kbd">ESC</kbd>
-                            Cerrar
+                            {{ $labels['close'] }}
                         </span>
                     </span>
                 </div>
@@ -182,10 +182,11 @@
 @once
 <script>
 document.addEventListener('alpine:init', () => {
-    Alpine.data('puzzleGlobalSearch', (settings, wire, commands) => ({
+    Alpine.data('puzzleGlobalSearch', (settings, wire, commands, labels) => ({
     settings,
     wire,
     commands: commands || [],
+    labels,
     isOpen: false,
     step: 'search',
     query: '',
@@ -202,19 +203,19 @@ document.addEventListener('alpine:init', () => {
     get placeholder() {
         if (this.step === 'dependency') {
             return this.dependencies[this.dependencyIndex]?.placeholder
-                || 'Buscar...';
+                || this.labels.placeholder;
         }
 
         if (this.step === 'commands') {
-            return 'Buscar comando...';
+            return this.labels.placeholder_command;
         }
 
-        return this.settings.ui.placeholder || 'Buscar...';
+        return this.settings.ui.placeholder || this.labels.placeholder;
     },
 
     get emptyMessage() {
         if (this.step === 'commands') {
-            return 'No se encontraron comandos';
+            return this.labels.no_commands;
         }
 
         const min = Number(
@@ -222,8 +223,8 @@ document.addEventListener('alpine:init', () => {
         );
 
         return this.query.trim().length < min
-            ? 'Escribe para buscar'
-            : 'No se encontraron resultados';
+            ? this.labels.type_to_search
+            : this.labels.no_results;
     },
 
     isIconClass(icon) {
@@ -343,7 +344,7 @@ document.addEventListener('alpine:init', () => {
             description: command.description,
             icon: command.icon,
             hasDependencies: command.has_dependencies,
-            category: 'Comandos',
+            category: this.labels.commands,
         }));
 
         this.items = this.decorate(commands);

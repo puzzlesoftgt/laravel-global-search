@@ -61,7 +61,10 @@ return [
     'ui' => [
         // light, dark or auto (follows the operating system preference).
         'theme' => 'auto',
-        'placeholder' => 'Buscar...',
+
+        // Null uses the translation for the active locale.
+        // A string here replaces that translation in every locale.
+        'placeholder' => null,
         'show_icons' => true,
         'show_descriptions' => true,
         'close_on_select' => true,

@@ -44,10 +44,19 @@ class GlobalSearchServiceProvider extends ServiceProvider
             __DIR__ . '/../resources/css/global-search.css'
         );
 
+        $this->loadTranslationsFrom(
+            __DIR__ . '/../lang',
+            'global-search'
+        );
+
         $this->publishes([
             __DIR__ . '/../config/global-search.php'
                 => config_path('global-search.php'),
         ], 'global-search-config');
+
+        $this->publishes([
+            __DIR__ . '/../lang' => $this->app->langPath('vendor/global-search'),
+        ], 'global-search-translations');
 
         if ($this->app->runningInConsole()) {
             $this->commands([

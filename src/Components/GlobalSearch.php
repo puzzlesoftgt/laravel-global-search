@@ -66,6 +66,34 @@ class GlobalSearch extends Component
                 'ui' => config('global-search.ui', []),
             ],
             'commands' => $manager->searchCommands(''),
+            'labels' => $this->labels(),
         ]);
+    }
+
+    protected function labels(): array
+    {
+        $keys = [
+            'dialog',
+            'back',
+            'search',
+            'searching',
+            'searching_message',
+            'close',
+            'navigate',
+            'open',
+            'select',
+            'commands',
+            'placeholder',
+            'placeholder_command',
+            'no_commands',
+            'type_to_search',
+            'no_results',
+        ];
+
+        return collect($keys)
+            ->mapWithKeys(fn (string $key) => [
+                $key => __('global-search::global-search.'.$key),
+            ])
+            ->all();
     }
 }

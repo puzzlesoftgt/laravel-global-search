@@ -13,7 +13,7 @@ class SearchDependency
 
     public function __construct(
         public string $name,
-        public string $placeholder = 'Buscar...',
+        public string $placeholder = 'Search...',
     ) {}
 
     public static function make(string $name): static
