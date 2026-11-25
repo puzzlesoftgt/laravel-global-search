@@ -114,6 +114,47 @@
                                 x-text="item.category"
                             ></div>
 
+                            <template x-if="item.url && step === 'search'">
+                            <a
+                                class="ps-search__result"
+                                :href="item.url"
+                                :class="{
+                                    'ps-search__result--active':
+                                        selectedIndex === index
+                                }"
+                                @mouseenter="selectedIndex = index"
+                                @click="choose(item, $event)"
+                            >
+                                <span
+                                    class="ps-search__result-icon"
+                                    x-show="settings.ui.show_icons !== false && item.icon"
+                                >
+                                    <i
+                                        x-show="isIconClass(item.icon)"
+                                        :class="item.icon"
+                                    ></i>
+                                    <span
+                                        x-show="!isIconClass(item.icon)"
+                                        x-text="item.icon"
+                                    ></span>
+                                </span>
+
+                                <span class="ps-search__result-content">
+                                    <div
+                                        class="ps-search__result-title"
+                                        x-html="item.title"
+                                    ></div>
+
+                                    <div
+                                        class="ps-search__result-description"
+                                        x-show="settings.ui.show_descriptions !== false && item.description"
+                                        x-html="item.description"
+                                    ></div>
+                                </span>
+                            </a>
+                            </template>
+
+                            <template x-if="!item.url || step !== 'search'">
                             <button
                                 type="button"
                                 class="ps-search__result"
@@ -151,6 +192,7 @@
                                     ></div>
                                 </span>
                             </button>
+                            </template>
                         </div>
                     </template>
                 </div>

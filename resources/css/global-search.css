@@ -233,6 +233,7 @@ button.ps-search__kbd {
     color: inherit;
     text-align: left;
     font: inherit;
+    text-decoration: none;
     cursor: pointer;
 }
 

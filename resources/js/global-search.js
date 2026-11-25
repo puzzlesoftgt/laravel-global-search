@@ -255,7 +255,17 @@ document.addEventListener('alpine:init', () => {
         if (item) this.choose(item);
     },
 
-    async choose(item) {
+    opensInNewTab(event) {
+        if (!event) return false;
+
+        return event.metaKey
+            || event.ctrlKey
+            || event.shiftKey
+            || event.altKey
+            || event.button !== 0;
+    },
+
+    async choose(item, event = null) {
         if (this.step === 'commands') {
             await this.selectCommand(item);
             return;
@@ -279,6 +289,11 @@ document.addEventListener('alpine:init', () => {
         }
 
         if (item.url) {
+            if (this.opensInNewTab(event)) {
+                return;
+            }
+
+            event?.preventDefault();
             window.location.assign(item.url);
             return;
         }
